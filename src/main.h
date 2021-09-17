@@ -5,8 +5,6 @@
 
 #include <Arduino.h>
 
-void espDelay(int ms);
-void button_init();
-void reload_led();
+
 
 #endif
