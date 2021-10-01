@@ -6,6 +6,9 @@
 #define PIN_LED_2 5
 #define PIN_LED_3 16
 
+
+#define RFID_PERID 220
+
 #define NUMPIXELS 24
 
 Adafruit_NeoPixel led1(NUMPIXELS, PIN_LED_1, NEO_GRB + NEO_KHZ800);
@@ -20,6 +23,12 @@ auto white = Adafruit_NeoPixel::Color(100, 100, 100);
 
 uint32_t colors[] = {R, G, B};
 
+// RFID reader config
+const int numRfidReaders = 2;
+const int rfidPins[numRfidReaders] = {32, 33};
+int rfidOnIdx = 0;
+unsigned long prevToggleTs = 0;
+
 void setup()
 {
 	Serial.begin(115200);
@@ -27,17 +36,19 @@ void setup()
 	for (auto led : leds)
 	{
 		led->begin();
+		led->clear();
 	}
-	leds[0]->clear();
-	leds[1]->clear();
-	leds[2]->clear();
+	for (auto pin: rfidPins){
+		pinMode(pin, OUTPUT);
+		digitalWrite(pin, 0);
+	}
+
 }
 
-int brightness[] = {0,0,0};
-bool on[] = {true,true,true};
+int brightness[] = {0, 0, 0};
+bool on[] = {true, true, true};
 
-
-void ledLoop (int idx)
+void ledLoop(int idx)
 {
 	leds[idx]->fill(white);
 	leds[idx]->setBrightness(brightness[idx]);
@@ -60,18 +71,37 @@ void ledLoop (int idx)
 	}
 }
 
+void toggleRFID()
+{
+	auto now = millis();
+	if (prevToggleTs == 0 || (now - prevToggleTs) > RFID_PERID)
+	{
+		prevToggleTs = now;
+		auto currPin = rfidPins[rfidOnIdx];
+		digitalWrite(currPin, 0);
+		rfidOnIdx = (rfidOnIdx + 1) % numRfidReaders;
+		auto nextPin = rfidPins[rfidOnIdx];
+		digitalWrite(nextPin, 1);
+	}
+}
+
 bool firstRun = true;
 void loop()
 {
 	// Serial.println(millis());
-	if (firstRun) {
-		if ( millis() > 2000 ) {
+	if (firstRun)
+	{
+		if (millis() > 2000)
+		{
 			on[0] = false;
 			on[1] = false;
 			on[2] = false;
 			firstRun = false;
 		}
 	}
+
+	toggleRFID();
+
 	ledLoop(0);
 	ledLoop(1);
 	ledLoop(2);
