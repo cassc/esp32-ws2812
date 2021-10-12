@@ -6,7 +6,6 @@
 #define PIN_LED_2 5
 #define PIN_LED_3 16
 
-
 #define RFID_PERID 220
 
 #define NUMPIXELS 24
@@ -20,6 +19,19 @@ auto R = Adafruit_NeoPixel::Color(10, 0, 0);
 auto G = Adafruit_NeoPixel::Color(0, 10, 0);
 auto B = Adafruit_NeoPixel::Color(0, 0, 10);
 auto white = Adafruit_NeoPixel::Color(100, 100, 100);
+
+// For brightness test
+unsigned long nextBrTs = 0;
+const int numBrSteps = 6;
+// With 2 LEDs, consumes current: 1.78, 1.4, 1.07, 0.74, 0.4, 0.13
+uint8_t brSteps[numBrSteps] = {255, 200, 150, 100, 50, 10};
+
+// const int numBrSteps = 4;
+// uint8_t brSteps[numBrSteps] = {120, 100, 50, 10};
+
+
+auto brIndex = 0;
+// End For brightness test
 
 uint32_t colors[] = {R, G, B};
 
@@ -38,11 +50,11 @@ void setup()
 		led->begin();
 		led->clear();
 	}
-	for (auto pin: rfidPins){
+	for (auto pin : rfidPins)
+	{
 		pinMode(pin, OUTPUT);
 		digitalWrite(pin, 0);
 	}
-
 }
 
 int brightness[] = {0, 0, 0};
@@ -85,9 +97,35 @@ void toggleRFID()
 	}
 }
 
+void fullOn()
+{
+	auto now = millis();
+	if (now < nextBrTs){
+		return;
+	}
+	
+	auto br = brSteps[brIndex];
+	
+	auto white = Adafruit_NeoPixel::Color(255, 255, 255);
+	for (auto led : leds)
+	{
+		led->clear();
+		led->fill(white);
+		led->setBrightness(br);
+		led->show();
+	}
+
+	nextBrTs = now + 5000;
+	brIndex = (brIndex +1 )%numBrSteps;
+}
+
 bool firstRun = true;
 void loop()
 {
+
+	fullOn();
+	return;
+
 	// Serial.println(millis());
 	if (firstRun)
 	{
