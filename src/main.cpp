@@ -2,13 +2,12 @@
 #include <Adafruit_NeoPixel.h>
 #include "main.h"
 
+// Configure the pins to control WS2812 LEDs
 #define PIN_LED_1 23
 #define PIN_LED_2 5
 #define PIN_LED_3 16
 
-
-#define RFID_PERID 220
-
+// Number of LEDs on each WS2812 LED ring
 #define NUMPIXELS 24
 
 Adafruit_NeoPixel led1(NUMPIXELS, PIN_LED_1, NEO_GRB + NEO_KHZ800);
@@ -24,8 +23,13 @@ auto white = Adafruit_NeoPixel::Color(100, 100, 100);
 uint32_t colors[] = {R, G, B};
 
 // RFID reader config
+// RFID on/off period in millis
+#define RFID_PERID 220
 const int numRfidReaders = 2;
+// PINs to controls RFID reader, connects to Reed relays
 const int rfidPins[numRfidReaders] = {32, 33};
+
+
 int rfidOnIdx = 0;
 unsigned long prevToggleTs = 0;
 
