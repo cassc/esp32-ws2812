@@ -8,7 +8,10 @@ This app runs on ESP32, it
 # List of hardware
 
 * ESP32
-* A Reed relay which turns on or off by controlling currents through the inputs. In this project we are using `COTO 9007-05-00`, this relay has internal resistance about 500ohm, so it is generally safe to connect to GPIO directly.
+* A Reed relay which turns on or off by controlling currents through the inputs. In this project we are using `COTO 9007-05-00`, this relay has internal resistance about 500ohm, so it is generally safe to connect to GPIO directly. 
+
+  > This relay has four pins, run a current between pin 1 and 4, pin 2 and 3 will be short-circuited. 
+
 
 
 # Configuration
@@ -36,3 +39,13 @@ const int rfidPins[numRfidReaders] = {32, 33};
 ```cpp
 #define RFID_PERID 220
 ```
+
+Sample hardware connection: 
+
+![Sample connection](sample-usage.png)
+
+# Server
+
+* [sycreader-nfc](https://github.com/make-studios/sycreader-nfc): the backend receives NFC readings and send to node-red through HTTP
+* `node-red-flow/flow.json`: is the node-red flow
+

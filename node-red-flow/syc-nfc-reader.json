@@ -1,0 +1,274 @@
+[
+    {
+        "id": "29574a395e631601",
+        "type": "tab",
+        "label": "syc-nfc-reader",
+        "disabled": true,
+        "info": ""
+    },
+    {
+        "id": "843171cbe609576e",
+        "type": "http in",
+        "z": "29574a395e631601",
+        "name": "",
+        "url": "/nfc-read",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 290,
+        "y": 180,
+        "wires": [
+            [
+                "29a70cb07f69afad",
+                "216980c68cb569d8"
+            ]
+        ]
+    },
+    {
+        "id": "29a70cb07f69afad",
+        "type": "debug",
+        "z": "29574a395e631601",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "216980c68cb569d8",
+        "type": "http response",
+        "z": "29574a395e631601",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 640,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "03f18cd09abe713d",
+        "type": "function",
+        "z": "29574a395e631601",
+        "name": "",
+        "func": "\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 580,
+        "wires": [
+            [
+                "860883906bd87dd1",
+                "85627f92e5b1fe98"
+            ]
+        ]
+    },
+    {
+        "id": "38afd443e6e4e621",
+        "type": "http in",
+        "z": "29574a395e631601",
+        "name": "",
+        "url": "/wled/1",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 270,
+        "y": 580,
+        "wires": [
+            [
+                "7279adbb966c751b",
+                "03f18cd09abe713d"
+            ]
+        ]
+    },
+    {
+        "id": "7279adbb966c751b",
+        "type": "http response",
+        "z": "29574a395e631601",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 520,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "860883906bd87dd1",
+        "type": "wled2",
+        "z": "29574a395e631601",
+        "address": "10.0.2.182",
+        "brightness": 128,
+        "delay": 0,
+        "color1": "#fff700",
+        "color2": "#ffffff",
+        "color3": "#ffffff",
+        "effect": 0,
+        "effectIntensity": 128,
+        "effectSpeed": 128,
+        "name": "LED1",
+        "palette": "0",
+        "preset": 0,
+        "state": "on",
+        "x": 690,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8b59271760b71b67",
+        "type": "http in",
+        "z": "29574a395e631601",
+        "name": "",
+        "url": "/wled/2",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 270,
+        "y": 720,
+        "wires": [
+            [
+                "7279adbb966c751b",
+                "5c932eac5625054e"
+            ]
+        ]
+    },
+    {
+        "id": "13230b869598b64f",
+        "type": "wled2",
+        "z": "29574a395e631601",
+        "address": "10.0.2.182",
+        "brightness": 128,
+        "delay": 0,
+        "color1": "#fff700",
+        "color2": "#ffffff",
+        "color3": "#ffffff",
+        "effect": 0,
+        "effectIntensity": 128,
+        "effectSpeed": 128,
+        "name": "LED2",
+        "palette": "0",
+        "preset": 0,
+        "state": "on",
+        "x": 690,
+        "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "53c9726f73b0f061",
+        "type": "http in",
+        "z": "29574a395e631601",
+        "name": "",
+        "url": "/wled/3",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 270,
+        "y": 880,
+        "wires": [
+            [
+                "7279adbb966c751b",
+                "8f15e1c33bb4f694"
+            ]
+        ]
+    },
+    {
+        "id": "6d411ea2dda75ed3",
+        "type": "wled2",
+        "z": "29574a395e631601",
+        "address": "10.0.2.182",
+        "brightness": 128,
+        "delay": 0,
+        "color1": "#fff700",
+        "color2": "#ffffff",
+        "color3": "#ffffff",
+        "effect": 0,
+        "effectIntensity": 128,
+        "effectSpeed": 128,
+        "name": "LED3",
+        "palette": "0",
+        "preset": 0,
+        "state": "on",
+        "x": 690,
+        "y": 880,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5c932eac5625054e",
+        "type": "function",
+        "z": "29574a395e631601",
+        "name": "",
+        "func": "const state = msg.req.params.state\nconst ip = msg.req.params.ip\n\n\n\nmsg.state = state\nmsg.ip = ip\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 720,
+        "wires": [
+            [
+                "13230b869598b64f"
+            ]
+        ]
+    },
+    {
+        "id": "8f15e1c33bb4f694",
+        "type": "function",
+        "z": "29574a395e631601",
+        "name": "",
+        "func": "const state = msg.req.params.state\nconst ip = msg.req.params.ip\n\n\n\nmsg.state = state\nmsg.ip = ip\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 880,
+        "wires": [
+            [
+                "6d411ea2dda75ed3"
+            ]
+        ]
+    },
+    {
+        "id": "85627f92e5b1fe98",
+        "type": "debug",
+        "z": "29574a395e631601",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "28c288957775f7a4",
+        "type": "comment",
+        "z": "29574a395e631601",
+        "name": "curl  http://localhost:1880/wled/1 -H 'Content-Type: application/json'  -d ' {\"color1\": [255, 100, 100], \"state\": \"on\", \"brightness\": 255}'",
+        "info": "",
+        "x": 630,
+        "y": 440,
+        "wires": []
+    }
+]
