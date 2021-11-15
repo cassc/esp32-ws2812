@@ -117,13 +117,13 @@ void loop()
 		if (msg.startsWith("on:"))
 		{
 			auto idx = atoi(msg.substring(3, 4).c_str());
-			Serial.println(idx + " on");
+			Serial.println(String(idx) + " on");
 			on[idx] = true;
 		}
 		else if (msg.startsWith("off:"))
 		{
 			auto idx = atoi(msg.substring(4, 5).c_str());
-			Serial.println(idx + " off");
+			Serial.println(String(idx) + " off");
 			on[idx] = false;
 		}
 	}
