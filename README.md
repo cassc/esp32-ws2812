@@ -1,8 +1,8 @@
-# Scentbysix
+# Scentbysix / CM Gallary
 
 This app runs on ESP32, it 
 
-* controls three WS2812 LED rings through serial port
+* turns on/off three WS2812 LED rings through serial port
 * turns on/off an RFID antenna with an extra Reed Relay
 
 # List of hardware
