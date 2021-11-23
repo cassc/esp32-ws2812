@@ -8,7 +8,6 @@
 
 // Number of LEDs on each WS2812 LED ring
 #define NUMPIXELS 24
-
 CRGB led1[NUMPIXELS];
 CRGB led2[NUMPIXELS];
 CRGB led3[NUMPIXELS];
@@ -21,6 +20,17 @@ CRGB ledColors[] = {
 	CRGB(255, 255, 255),
 	CRGB(255, 255, 255),
 	CRGB(255, 255, 255)
+};
+CRGB finalLedColors[] = {
+	CRGB(255,255,255),
+	CRGB(255,255,255),
+	CRGB(255,255,255)
+};
+float ledColorBlendAmount[] = {
+	0, 0, 0
+};
+long lastChangeTime[] = {
+	0, 0, 0
 };
 
 bool firstRun = true;
@@ -67,46 +77,56 @@ void processSerialMessages()
 		if (msg.startsWith("on:"))
 		{
 			auto idx = atoi(msg.substring(3, 4).c_str());
-			auto r = atoi(msg.substring(5, 8).c_str());
-			auto g = atoi(msg.substring(9, 12).c_str());
+			auto g = atoi(msg.substring(5, 8).c_str());
+			auto r = atoi(msg.substring(9, 12).c_str());
 			auto b = atoi(msg.substring(13, 16).c_str());
 			auto tempBrightness = atoi(msg.substring(17, 20).c_str());
 			float speed = atof(msg.substring(21, 22).c_str());
-			updateLedSpeed[idx] = speed * 0.1;
-			ledColors[idx] = CRGB(r, g, b);
+			updateLedSpeed[idx] = speed;
+			finalLedColors[idx] = CRGB(g, r, b);
+			finalBrightnessValue[idx] = tempBrightness;
+			ledColorBlendAmount[idx] = 0;
+			lastChangeTime[idx] = 0;
 			Serial.println("LED Color " + String(r) + "," + String(g) + "," + String(b));
 			Serial.println("Speed " + String(speed));
 			Serial.println("Brightness " + String(tempBrightness));
-			finalBrightnessValue[idx] = tempBrightness;
 		}
 	}
 }
 
 void updateLed(int idx)
 {
-	float b = currentBrightnessValue[idx];
-	if ( b != finalBrightnessValue[idx] ) {
+	if ( ledColorBlendAmount[idx] != 254 ) {
+		
 		for (int i = 0; i < NUMPIXELS; i++)
 		{
-			leds[idx][i] = ledColors[idx];
-			leds[idx][i].r = dim8_video(b);
-			leds[idx][i].g = dim8_video(b);
-			leds[idx][i].b = dim8_video(b);
+			leds[idx][i] = blend(ledColors[idx], finalLedColors[idx], ledColorBlendAmount[idx]);
 		}
-		if ( finalBrightnessValue[idx] > b ) {
-			b += updateLedSpeed[idx];
-			if ( b >= finalBrightnessValue[idx] ) {
-				b = finalBrightnessValue[idx];
-			}
-			currentBrightnessValue[idx] = b;
-		} else if ( finalBrightnessValue[idx] < b ) {
-			b -= updateLedSpeed[idx];
-			if ( b <= finalBrightnessValue[idx] ) {
-				b = finalBrightnessValue[idx];
-			}
-			currentBrightnessValue[idx] = b;
+		
+		if ( millis() - lastChangeTime[idx] > 2) {
+			ledColorBlendAmount[idx] += updateLedSpeed[idx];
+			// ledColorBlendAmount[idx] += (254. - ledColorBlendAmount[idx]) * 0.1f;
+			if ( ledColorBlendAmount[idx] >= 254) {
+				ledColorBlendAmount[idx] = 254;
+				ledColors[idx] = finalLedColors[idx];
+			} else if (ledColorBlendAmount[idx] == 0) {
+				ledColors[idx] = leds[idx][0];
+			} 
 		}
-		// Serial.println("Animate LED " + String(idx) + ", " + String(b));
+		// if ( finalBrightnessValue[idx] > b ) {
+		// 	b += updateLedSpeed[idx];
+		// 	if ( b >= finalBrightnessValue[idx] ) {
+		// 		b = finalBrightnessValue[idx];
+		// 	}
+		// 	currentBrightnessValue[idx] = b;
+		// } else if ( finalBrightnessValue[idx] < b ) {
+		// 	b -= updateLedSpeed[idx];
+		// 	if ( b <= finalBrightnessValue[idx] ) {
+		// 		b = finalBrightnessValue[idx];
+		// 	}
+		// 	currentBrightnessValue[idx] = b;
+		// }
+		// Serial.println("Animate LED " + String(idx) + ", " + String(255-b));
 	}
 }
 
@@ -133,8 +153,8 @@ void loop()
 
 	updateLed(0);
 	updateLed(1);
-
-
+	updateLed(2);
 	FastLED.show();
+	// delay(100);
 	
 }
